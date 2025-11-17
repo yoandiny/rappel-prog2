@@ -1,11 +1,10 @@
-import java.util.Date;
+import java.time.LocalDate;
 
-public class Teacher {
-    Integer id;
-    String lastName;
-    String firstName;
-    Date birthDate;
-    String mail;
-    String phone;
-    String specialty;
+public class Teacher extends Person {
+    private String specialty;
+
+    public Teacher(int id, String lastName, String firstName, LocalDate birthDate, String email, String phoneNumber, String specialty) {
+        super(id, lastName, firstName, birthDate, email, phoneNumber);
+        this.specialty = specialty;
+    }
 }

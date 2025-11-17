@@ -8,5 +8,4 @@ public class Tutor extends Person {
         this.relationship = relationship;
     }
 
-    public String getRelationship() { return relationship; }
 }
