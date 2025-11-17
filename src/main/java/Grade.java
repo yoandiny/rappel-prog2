@@ -2,7 +2,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 public class Grade {
     private Student student;
@@ -13,7 +12,6 @@ public class Grade {
         this.student = student;
         this.exam = exam;
         this.history = new ArrayList<>();
-
         addGradeChange(initialValue, Instant.now(), reason);
     }
 
@@ -22,18 +20,33 @@ public class Grade {
         this.history.sort(Comparator.comparing(GradeHistoryEntry::getChangeTimestamp));
     }
 
+    public Student getStudent() {
+        return student;
+    }
 
-    public Student getStudent() { return student; }
-    public Exam getExam() { return exam; }
-    public List<GradeHistoryEntry> getHistory() { return history; }
+    public Exam getExam() {
+        return exam;
+    }
 
-    public Optional<Double> getValueAt(Instant t) {
-        return history.stream()
+    public List<GradeHistoryEntry> getHistory() {
+        return history;
+    }
 
-                .filter(entry -> !entry.getChangeTimestamp().isAfter(t))
+    public Double getValueAt(Instant t) {
+        GradeHistoryEntry latestEntryBeforeT = null;
 
-                .max(Comparator.comparing(GradeHistoryEntry::getChangeTimestamp))
+        for (GradeHistoryEntry entry : history) {
+            if (!entry.getChangeTimestamp().isAfter(t)) {
+                if (latestEntryBeforeT == null || entry.getChangeTimestamp().isAfter(latestEntryBeforeT.getChangeTimestamp())) {
+                    latestEntryBeforeT = entry;
+                }
+            }
+        }
 
-                .map(GradeHistoryEntry::getValue);
+        if (latestEntryBeforeT != null) {
+            return latestEntryBeforeT.getValue();
+        } else {
+            return null;
+        }
     }
 }
